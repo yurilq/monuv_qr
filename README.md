@@ -33,8 +33,8 @@ monuv_qr_code_tracking_solution/
 │   └── monuv_api_gateway_config.json
 │
 ├── README.md
-├── .gitignore
-└── LICENSE
+│
+└── .gitignore
 📂 Descrição dos Diretórios e Arquivos
 
 
