@@ -1,0 +1,50 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0",
+        "title": "Monuv QR Code API"
+    },
+    "paths": {
+        "/upload": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ImageUpload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image processed successfully"
+                    }
+                },
+                "x-amazon-apigateway-integration": {
+                    "type": "aws_proxy",
+                    "httpMethod": "POST",
+                    "uri": "arn:aws:apigateway:{region}:lambda:path/2015-03-31/functions/arn:aws:lambda:{region}:{account_id}:function:MonuvQRLambdaFunction/invocations"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ImageUpload": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string",
+                    "description": "Base64 encoded image data"
+                }
+            }
+        }
+    }
+}

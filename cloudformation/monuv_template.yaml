@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MonuvQRLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties: 
+      FunctionName: MonuvQRLambdaFunction
+      Handler: monuv_qr_lambda.lambda_handler
+      Runtime: python3.9
+      Code:
+        S3Bucket: monuv-code-bucket
+        S3Key: monuv-qr-lambda.zip
+      Role: arn:aws:iam::123456789012:role/monuv-lambda-role
+
+  MonuvQRProcessingQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: monuv-qr-processing-queue
+
+  MonuvQRGlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: monuv-qr-processing-job
+      Role: arn:aws:iam::123456789012:role/monuv-glue-role
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://monuv-script-bucket/glue-scripts/monuv_qr_glue_job.py
+        PythonVersion: '3'
+      GlueVersion: '2.0'
+      MaxCapacity: 10.0
+
+  MonuvAthenaWorkgroup:
+    Type: AWS::Athena::WorkGroup
+    Properties:
+      Name: monuv-qr-analysis-workgroup
+      Description: Workgroup for Monuv QR analysis
+      State: ENABLED
+      WorkGroupConfiguration:
+        ResultConfiguration:
+          OutputLocation: s3://monuv-results-bucket/query-results/
